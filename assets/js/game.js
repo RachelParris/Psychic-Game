@@ -3,6 +3,7 @@ var x = 12;
 var wins = 1;
 var losses = 0;
 
+var letters = [];
 // For each wrong guess the remaining # of guesses decrements by 1 from 12 to 0.
 // It stops at 0 and counts as 1 loss.
 function wrongAnswer() {
@@ -35,6 +36,7 @@ document.onkeyup = function(event) {
     wrongAnswer();
   }
 
+  var addLetters = letters.push(userGuess);
   document.getElementById('printGuesses').innerHTML = userGuess;
 
 }
