@@ -1,44 +1,75 @@
-var computerChoice = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-var x = 12;
-var wins = 0;
-var losses = 0;
+/*
+Wins: (# of times the user has guessed the letter correctly)
+Losses: (# of times the user has failed to guess the letter correctly after 
+exhausting all guesses)
+Guesses Left: (# of guesses left. This will update)
+Your Guesses So Far: (the specific letters that the user typed. Display these 
+until the user either wins or loses.)
 
+When the player wins, increase the Wins counter and start the game over again 
+(without refreshing the page).
 
-document.getElementById('win').innerHTML = wins;
-document.getElementById('lost').innerHTML = losses;
-// For each wrong guess the remaining # of guesses decrements by 1 from 12 to 0.
-// It stops at 0 and counts as 1 loss.
-function wrongAnswer() {
-  if (x > 0) {
-    x--;
-    userLost();
-  }
-}
+When the player loses, increase the Losses counter and restart the game without 
+a page refresh (just like when the user wins).
+*/
 
-function userLost() {
-  if ( x === 0) {
-    losses++;
-    document.getElementById('lost').innerHTML = losses;
-  }
-}
+// const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+const letters = ["A", "B", "C"];
+let computerChoice = "";
+let userGuess = "";
+let wins = 0;
+let loses = 0;
+let guessesLeft = 3;
+let guessesAttempted = [];
+
 
 document.onkeyup = function(event) {
-  var input = event.key;
-  var userGuess = input.toUpperCase();
+	event.preventDefault();
+	guessesLeft--;
+	var input = event.key.toUpperCase();
 
-  var computerGuess = computerChoice[Math.floor(Math.random() * computerChoice.length)];
-  document.getElementById('computerPick').innerHTML = computerGuess;
+	function reset() {
+		let computerChoice = "";
+		let userGuess = "";
+		let guessesLeft = 3;
+		let guessesAttempted = [];
+		document.querySelector("#guesses-left").innerHTML = guessesLeft;
+	}
 
-  if (userGuess === computerGuess) {
-  	wins++
-    document.getElementById('win').innerHTML = wins;
-    console.log("true");
-  } else {
-    document.getElementById('remainingGuesses').innerHTML = x;
-    console.log("false");
-    wrongAnswer();
-  }
+	// Computer randomly chooses a letter
+function randomComputerChoice() {
+	// Random choice from letters[0] to letters[letters.length] 
+	computerChoice = letters[Math.floor(Math.random() * Math.floor(letters.length))];
+}
 
-  document.getElementById('printGuesses').innerHTML = userGuess;
+function getUserInput(input) {
+	userGuess = input;
+	guessesAttempted.push(input);
+	document.querySelector("#guesses-attempted").innerHTML = guessesAttempted.join(" ");
+}
 
+function checkGuess(computerChoice, userGuess) {
+	console.log({
+		"computer" : computerChoice,
+		"user": userGuess
+	})
+	if (!(computerChoice === userGuess)) {
+		if (guessesLeft > 0) {
+			document.querySelector("#guesses-left").innerHTML = guessesLeft;
+		} else if (guessesLeft === 0) {
+			loses++;
+			console.log("game lost!")
+			document.querySelector("#loses").innerHTML = loses;
+			reset();
+		}
+	} else {
+		wins++;
+		document.querySelector("#wins").innerHTML = wins;
+		reset();
+	} 
+}
+
+	randomComputerChoice();
+	getUserInput(input);
+	checkGuess(computerChoice, userGuess);
 }
